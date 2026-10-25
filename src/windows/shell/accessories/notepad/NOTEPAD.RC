@@ -1,0 +1,150 @@
+/*                                      */
+/*	  Notepad application		*/
+/*					*/
+/*   Copyright (C) 1984 Microsoft Inc.	*/
+/*   Copyright (C) 1990 Microsoft Inc.  */
+/*                                      */
+#include "notepad.h"
+#define GRP	 WS_GROUP
+#define TAB	 WS_TABSTOP
+#define TABGRP	 WS_TABSTOP | WS_GROUP
+#define DLGMODAL WS_POPUP | WS_DLGFRAME
+
+/* Version Stamping */
+//#include "notepad.rcv"
+
+ID_ICON ICON PRELOAD DISCARDABLE	notepad.ico
+
+ID_MENUBAR  MENU PRELOAD DISCARDABLE
+BEGIN
+    POPUP   "&File"
+        BEGIN
+            MENUITEM    "&New",          M_NEW
+            MENUITEM    "&Open...",      M_OPEN
+            MENUITEM    "&Save",         M_SAVE
+            MENUITEM    "Save &As...",   M_SAVEAS
+            MENUITEM    "&Print",        M_PRINT
+            MENUITEM    "Page Se&tup...",M_PAGESETUP
+	    MENUITEM	"P&rint Setup...", M_PRINTSETUP
+            MENUITEM    SEPARATOR
+            MENUITEM    "E&xit",         M_EXIT
+        END
+
+    POPUP   "&Edit"
+        BEGIN
+            MENUITEM    "&Undo\tCtrl+Z",  M_UNDO
+            MENUITEM    SEPARATOR
+            MENUITEM    "Cu&t\tCtrl+X",   M_CUT
+            MENUITEM    "&Copy\tCtrl+C",  M_COPY
+            MENUITEM    "&Paste\tCtrl+V",M_PASTE
+            MENUITEM    "De&lete\tDel",   M_CLEAR
+            MENUITEM    SEPARATOR
+            MENUITEM    "Select &All",    M_SELECTALL
+            MENUITEM    "Time/&Date\tF5", M_DATETIME
+            MENUITEM    SEPARATOR
+            MENUITEM    "&Word Wrap"      M_WW
+        END
+
+    POPUP   "&Search"
+        BEGIN
+            MENUITEM    "&Find...",        M_FIND
+            MENUITEM    "Find &Next\tF3",  M_FINDNEXT
+        END
+
+    POPUP "&Help"
+        BEGIN
+            MENUITEM "&Contents",               M_HELP
+            MENUITEM "&Search for Help on...",  M_SEARCHHELP
+            MENUITEM "&How to Use Help",        M_USEHELP
+            MENUITEM SEPARATOR
+            MENUITEM "&About Notepad...",       M_ABOUT
+        END
+
+END
+
+MainAcc ACCELERATORS PRELOAD DISCARDABLE
+BEGIN
+    VK_INSERT, M_COPY,     VIRTKEY, CONTROL
+    VK_F1,     M_HELP,     VIRTKEY
+    VK_F3,     M_FINDNEXT, VIRTKEY
+    VK_F5,     M_DATETIME, VIRTKEY
+    VK_BACK,   M_UNDO,     VIRTKEY, ALT
+    "^Z",       M_UNDO
+    "^X",      M_CUT
+    "^C",      M_COPY
+    "^V",      M_PASTE
+END
+
+/* Allow exit using ^C, ^D or ^Z during Setup */
+SlipUpAcc ACCELERATORS PRELOAD DISCARDABLE
+BEGIN
+    VK_INSERT, M_COPY,     VIRTKEY, CONTROL
+    VK_F1,     M_HELP,     VIRTKEY
+    VK_F3,     M_FINDNEXT, VIRTKEY
+    VK_F5,     M_DATETIME, VIRTKEY
+    VK_BACK,   M_UNDO,     VIRTKEY, ALT
+    "^Z",       M_UNDO
+    "^X",      M_CUT
+    "^C",      M_COPY
+    "^V",      M_PASTE
+    VK_ESCAPE, M_EXIT,     VIRTKEY
+    0x43,      M_EXIT,     VIRTKEY, CONTROL
+    0x44,      M_EXIT,     VIRTKEY, CONTROL
+    0x5A,      M_EXIT,     VIRTKEY, CONTROL
+END
+
+STRINGTABLE PRELOAD DISCARDABLE
+BEGIN
+    IDS_MERGE1	    "%%"
+    IDS_FILEOPENFAIL "%%\nCannot open this file."
+    IDS_DISKERROR   "%%\nCannot open this file.\n\nPlease verify that a disk is in the drive you specified."
+    IDS_FNF	    "%%\nThis file not found.\n\nCreate a new file?"
+    IDS_FAE	    "%%\nThis file already exists.\n\nReplace existing file?"
+    IDS_SCBC	    "%%\nThe text has changed.\n\nSave current changes?"
+    IDS_UNTITLED    "(Untitled)";
+    IDS_NOTEPAD     "Notepad - "
+    IDS_CFS	    "Cannot find ""%%"""
+    /* The following is a generic out of memory message which can also be 
+       system modal so no /n can appear in it. */
+    IDS_ERRSPACE    "Not enough memory to continue this operation."
+    IDS_FTL         "%%\nThis file is too large for Notepad.\n\nUse another editor to open the file."
+    IDS_NN	    "Notepad"
+    IDS_PASTEERR    "Line too long to paste.\n\nCopy and paste smaller portions of the line."
+    IDS_WRITEERR    "%%\nNot enough disk space to save file.\n\nDelete one or more files to increase available disk space, or save to a different disk."
+    IDS_INF         "%%\nThis is not a valid Notepad file.\n\nPlease verify that the file is a text file."
+    IDS_EFD	    "%%\nThis file is empty and will be deleted."
+    IDS_CSEF	    "Cannot save empty file."
+    IDS_CANTPRINT   "%%\nCannot print this file.\n\nPlease verify that the printer is connected and properly set up."
+    IDS_NVF	    "Not a valid file name."
+    IDS_NVF2	    "%%\nThis is not a valid file name.\n\nPlease verify that a valid file name is given."
+    IDS_NEDSTP	    "%%\nNot enough disk space to print this file.\nDelete one or more files to increase available disk space, and try again."
+    IDS_NEMTP       "Not enough memory to print.\n\nClose one or more applications to increase available memory."
+    IDS_CREATEERR   "%%\nCannot create this file.\n\nPlease verify that the correct path and file name are given."
+    IDS_NOWW	    "Too much text to word wrap."
+    IDS_EXT         "\\*.TXT"
+    IDS_HELPFILE    "notepad.hlp"
+    IDS_BADMARG     "The 'Margin' values were outside of the expected ranges.\n\nPlease verify that the margins are valid positive numbers."
+    IDS_HEADER      "&f"
+    IDS_FOOTER      "Page &p"
+    IDS_LEFT        ".75"
+    IDS_RIGHT       ".75"
+    IDS_TOP         "1"
+    IDS_BOT         "1"
+
+/*  IDS_LETTERS     "fFpPtTdDcCrRlL"   Original US values. DO NOT TRANSLATE   */
+/*                  The order is: File, Page, Time, Date, Center, Right, Left */
+
+    IDS_LETTERS     "fFpPtTdDcCrRlL"    /* Localizers:  This will change the  */
+					/* letters used in Page Setup	      */
+
+    IDS_FILTERTEXT  "Text Files (*.TXT)" /* filter text for File/Open  */
+    IDS_ALLFILES    "All Files (*.*)"   /* filter text for File/Open  */
+    IDS_OPENCAPTION "Open" 	/* title for file/open dialog */
+    IDS_SAVECAPTION "Save As"	/* title for file/save dialog */
+    IDS_CANNOTQUIT  "Cannot exit Notepad."
+    IDS_DRAGMENU    "Open #Cancel"
+    IDS_LOADDRVFAIL "Unable to load printer driver.\nThis can be due to insufficient memory or unable to find the printer driver file.\nCheck printer setup in Control Panel."
+END
+
+/* Include other dialogs. */
+rcinclude notepad.dlg

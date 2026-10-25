@@ -1,0 +1,2 @@
+These are files from the build 73f SDK, which include notepad and reversi source
+TODO: diff these with the final build
