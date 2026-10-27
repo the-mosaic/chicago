@@ -1,12 +1,3 @@
 # remove junk files
 .vscode/**/*
 src/.vscode/**/*
-
-# this is stuff from the msvc sdks, reference on how microsoft code looks
-reference/**/*
-
-# don't want those
-symbols/**/*
-
-# or the original files either
-win95/**/*
